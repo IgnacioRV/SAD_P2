@@ -5,7 +5,7 @@ public class Server {
     public static void main(String[] args) throws IOException {
          
         if (args.length != 1) {
-            System.err.println("Usage: java EchoServer <port number>");
+            System.err.println("Usage: java Server <port number>");
             System.exit(1);
         }
          

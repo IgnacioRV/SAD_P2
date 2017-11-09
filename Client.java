@@ -6,13 +6,13 @@ public class Client {
          
         if (args.length != 2) {
             System.err.println(
-                "Usage: java EchoClient <host name> <port number>");
+                "Usage: java Client <host name> <port number>");
             System.exit(1);
         }
  
         String hostName = args[0];
         int portNumber = Integer.parseInt(args[1]);
- 
+
         try (
             Socket s = new Socket(hostName, portNumber);
             PrintWriter out =
@@ -22,9 +22,11 @@ public class Client {
                     new InputStreamReader(s.getInputStream()));
             BufferedReader stdIn =
                 new BufferedReader(
-                    new InputStreamReader(System.in))
-        ) {
+                    new InputStreamReader(System.in));
+            ) {
             String userInput;
+            new ReadHandler(s).start();
+            new WriteHandler(s).start();  
             while ((userInput = stdIn.readLine()) != null) {
                 out.println(userInput);
                 System.out.println("Server said: " + in.readLine());
@@ -38,4 +40,34 @@ public class Client {
             System.exit(1);
         } 
     }
+
+    private static class ReadHandler extends Thread {
+        private String name;
+        private Socket socket;
+        private BufferedReader in;
+        private PrintWriter out;
+        public ReadHandler(Socket socket) {
+            this.socket = socket;
+        }
+        public void run() {
+            System.out.println("Reader Handler Thread");
+        }
+    }
+
+    private static class WriteHandler extends Thread {
+        private String name;
+        private Socket socket;
+        private BufferedReader in;
+        private PrintWriter out;
+        public WriteHandler(Socket socket) {
+            this.socket = socket;
+        }
+        public void run() {
+            System.out.println("Writer Handler Thread");
+        }
+    }
+
+
+
+
 }
